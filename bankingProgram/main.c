@@ -39,11 +39,13 @@ struct LinkedListNode{
 
 struct LinkedListNode* readFile(void);
 struct LinkedListNode *head;
+void printFileContents(void);
 
 int main() {
+    //menu();
     head = readFile();
-    menu();
-        return 0;
+    printFileContents();
+    return 0;
 }
 
 void menu(void)
@@ -83,7 +85,7 @@ void menu(void)
       }
       case 5: {
           printf("Exit sucessful.\n");
-          
+          system("clear");
           break;
       }
       default:
@@ -95,7 +97,7 @@ struct LinkedListNode* readFile() {
     
     FILE *ptr;
     
-    ptr=fopen("account.csv","r");
+    ptr=fopen("/Users/geisztadel/account2.csv", "r");
     if (ptr == NULL) {
            printf("Cannot open file \n");
            exit(0);
@@ -106,7 +108,7 @@ struct LinkedListNode* readFile() {
     char name[60], accNr[60], address[60], citizenship[60], phone[60], accType[60];
     double accBalance;
 
-    while (fscanf(ptr, "%s,%s,%s,%s,%s,%s,%lf",
+    while (fscanf(ptr, "\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%lf\"\n",
                   name,
                   accNr,
                   address,
@@ -179,7 +181,13 @@ void freeLinkedList(struct LinkedListNode *firstNode) {
 void printFileContents() {
     struct LinkedListNode* temp = head;
     while(temp != NULL) {
-        printf("%s",temp->data);
+        printf("Full name: %s", temp->data->name);
+        printf("Account number: %s", temp->data->accNr);
+        printf("Address: %s", temp->data->address);
+        printf("Citizenship: %s", temp->data->citizenship);
+        printf("Phone number: %s", temp->data->phone);
+        printf("Account type: %s", temp->data->accType);
+        printf("Account balance: %lf", temp->data->accBalance);
         temp = temp->next;
     }
     printf("\n");
