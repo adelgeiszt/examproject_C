@@ -10,16 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-void menu(void);
-void display(void);
-
-
-struct Date{
-    int month,day,year;
-
-    };
-struct Account{
-
+struct Account {
     char *name;
     char *accNr;
     char *address;
@@ -27,124 +18,81 @@ struct Account{
     char *phone;
     char *accType;
     double accBalance;
-
 };
 
-struct LinkedListNode{
-    struct Account *data;
-    struct LinkedListNode *prev;
-    struct LinkedListNode *next;
-    
+struct AccountLinkedListNode {
+    struct Account *account;
+    struct AccountLinkedListNode *prev;
+    struct AccountLinkedListNode *next;
 };
 
-struct LinkedListNode* readFile(void);
-struct LinkedListNode *head;
-void printFileContents(void);
+struct AccountLinkedListNode *readAccountsFile(const char*);
+void freeAccountLinkedList(struct AccountLinkedListNode *head);
+void printAccountLinkedList(const struct AccountLinkedListNode *head);
+
 
 int main() {
-    //menu();
-    head = readFile();
-    printFileContents();
+    const char *accountsFilePath ="/Users/geisztadel/account2.csv";
+    struct AccountLinkedListNode *head = readAccountsFile(accountsFilePath);
+    printAccountLinkedList(head);
+    freeAccountLinkedList(head);
     return 0;
 }
 
-void menu(void)
-{   int choose;
+struct AccountLinkedListNode *readAccountsFile(const char *accountsFilePath) {
 
-    printf("Main menu \n\n");
-    printf("Press 1 to display account\n");
-    printf("Press 2 to deposit money to account\n");
-    printf("Press 3 to withdraw money from account\n");
-    printf("Press 4 to display transaction history\n");
-    printf("Press 5 to exit\n\n");
-    printf("Select a menu item:\n");
-    scanf("%d",&choose);
-
-    //system("clear");
-    
-    switch (choose) {
-      case 1: {
-          printf("Account display\n");
-      
-          break;
-      }
-      case 2: {
-          printf("Deposit menu\n");
-      
-          break;
-      }
-      case 3: {
-          printf("Withdraw menu\n");
-     
-          break;
-      }
-      case 4: {
-          printf("Transaction history\n");
-        
-          break;
-      }
-      case 5: {
-          printf("Exit sucessful.\n");
-          system("clear");
-          break;
-      }
-      default:
-          printf("Error! There is no such option.\n");
-      }
-}
-
-struct LinkedListNode* readFile() {
-    
-    FILE *ptr;
-    
-    ptr=fopen("/Users/geisztadel/account2.csv", "r");
-    if (ptr == NULL) {
-           printf("Cannot open file \n");
-           exit(0);
+    FILE *filePtr = fopen(accountsFilePath, "r");
+    if (filePtr == NULL) {
+        printf("Cannot open file \n");
+        exit(0);
     }
-    
-    struct LinkedListNode *firstNode = NULL;
-    struct LinkedListNode *lastNode = NULL;
-    char name[60], accNr[60], address[60], citizenship[60], phone[60], accType[60];
+
+    struct AccountLinkedListNode *firstNode = NULL;
+    struct AccountLinkedListNode *lastNode = NULL;
+
+    char name[64], accNr[64], address[64], citizenship[64], phone[64], accType[64];
     double accBalance;
 
-    while (fscanf(ptr, "\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%lf\"\n",
-                  name,
-                  accNr,
-                  address,
-                  citizenship,
-                  phone,
-                  accType,
-                  &accBalance) != EOF) {
-        struct LinkedListNode *nextNode = malloc(sizeof(struct LinkedListNode));
-        lastNode->data = malloc(sizeof(struct Account));
-        
+    while (fscanf(
+            filePtr,
+            "\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%lf\"\n",
+            name,
+            accNr,
+            address,
+            citizenship,
+            phone,
+            accType,
+            &accBalance
+    ) != EOF) {
+        struct AccountLinkedListNode *nextNode = malloc(sizeof(struct AccountLinkedListNode));
+        nextNode->account = malloc(sizeof(struct Account));
+
         unsigned long nameLength = strlen(name);
-        lastNode->data->name = malloc(sizeof(char) * nameLength);
-        strncpy(name, lastNode->data->name, nameLength);
-        
+        nextNode->account->name = malloc(sizeof(char) * nameLength);
+        strncpy(nextNode->account->name, name, nameLength);
+
         unsigned long accNrLength = strlen(accNr);
-        lastNode->data->accNr = malloc(sizeof(char) * accNrLength);
-        strncpy(accNr, lastNode->data->accNr, accNrLength);
-        
+        nextNode->account->accNr = malloc(sizeof(char) * accNrLength);
+        strncpy(nextNode->account->accNr, accNr, accNrLength);
+
         unsigned long addressLength = strlen(address);
-        lastNode->data->address = malloc(sizeof(char) * addressLength);
-        strncpy(address, lastNode->data->address, addressLength);
-        
+        nextNode->account->address = malloc(sizeof(char) * addressLength);
+        strncpy(nextNode->account->address, address, addressLength);
+
         unsigned long citizenshipLength = strlen(citizenship);
-        lastNode->data->citizenship = malloc(sizeof(char) * citizenshipLength);
-        strncpy(citizenship, lastNode->data->citizenship, citizenshipLength);
-        
+        nextNode->account->citizenship = malloc(sizeof(char) * citizenshipLength);
+        strncpy(nextNode->account->citizenship, citizenship, citizenshipLength);
+
         unsigned long phoneLength = strlen(phone);
-        lastNode->data->phone = malloc(sizeof(char) * phoneLength);
-        strncpy(phone, lastNode->data->phone, phoneLength);
-        
+        nextNode->account->phone = malloc(sizeof(char) * phoneLength);
+        strncpy(nextNode->account->phone, phone, phoneLength);
+
         unsigned long accTypeLength = strlen(accType);
-        lastNode->data->accType = malloc(sizeof(char) * accTypeLength);
-        strncpy(accType, lastNode->data->accType, accTypeLength);
-        
-        lastNode->data->accBalance = accBalance;
-        
+        nextNode->account->accType = malloc(sizeof(char) * accTypeLength);
+        strncpy(nextNode->account->accType, accType, accTypeLength);
+
+        nextNode->account->accBalance = accBalance;
+
         nextNode->next = NULL;
         if (lastNode != NULL) {
             lastNode->next = nextNode;
@@ -152,43 +100,46 @@ struct LinkedListNode* readFile() {
         } else {
             nextNode->prev = NULL;
             firstNode = nextNode;
-            lastNode = firstNode;
         }
+        lastNode = nextNode;
     }
-    
-    if (ptr != NULL) {
-        fclose(ptr);
-    }
-    
+
+    fclose(filePtr);
+
     return firstNode;
 }
 
-void freeLinkedList(struct LinkedListNode *firstNode) {
-    free(firstNode->data->accNr);
-    free(firstNode->data->accType);
-    free(firstNode->data->address);
-    free(firstNode->data->citizenship);
-    free(firstNode->data->name);
-    free(firstNode->data->phone);
-    free(firstNode->data);
-    
-    if(firstNode->next!=NULL) {
-        freeLinkedList(firstNode->next);
+void freeAccountLinkedList(struct AccountLinkedListNode *head) {
+    free(head->account->accNr);
+    free(head->account->accType);
+    free(head->account->address);
+    free(head->account->citizenship);
+    free(head->account->name);
+    free(head->account->phone);
+    free(head->account);
+
+    if (head->next != NULL) {
+        freeAccountLinkedList(head->next);
     }
-    free(firstNode);
+
+    free(head);
 }
 
-void printFileContents() {
-    struct LinkedListNode* temp = head;
-    while(temp != NULL) {
-        printf("Full name: %s", temp->data->name);
-        printf("Account number: %s", temp->data->accNr);
-        printf("Address: %s", temp->data->address);
-        printf("Citizenship: %s", temp->data->citizenship);
-        printf("Phone number: %s", temp->data->phone);
-        printf("Account type: %s", temp->data->accType);
-        printf("Account balance: %lf", temp->data->accBalance);
+void printAccountLinkedList(const struct AccountLinkedListNode *head) {
+    const struct AccountLinkedListNode *temp = head;
+    while (temp != NULL) {
+        if (temp != head) {
+            printf("\n--------------------------------------------------------------------------------\n\n");
+        }
+
+        printf("%-16s %s\n", "Full name:", temp->account->name);
+        printf("%-16s %s\n", "Account number:", temp->account->accNr);
+        printf("%-16s %s\n", "Address:", temp->account->address);
+        printf("%-16s %s\n", "Citizenship:", temp->account->citizenship);
+        printf("%-16s %s\n", "Phone number:", temp->account->phone);
+        printf("%-16s %s\n", "Account type:", temp->account->accType);
+        printf("%-16s %lf\n", "Account balance:", temp->account->accBalance);
+
         temp = temp->next;
     }
-    printf("\n");
 }
