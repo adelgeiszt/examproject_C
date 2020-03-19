@@ -27,17 +27,37 @@ struct AccountLinkedListNode {
 };
 
 struct AccountLinkedListNode *readAccountsFile(const char*);
+void menu(void);
 void freeAccountLinkedList(struct AccountLinkedListNode *head);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
-
+void findClientbyAccNr(struct AccountLinkedListNode *head);
 
 int main() {
+    int choice;
+    printf("MAIN MENU");
+    printf("\n\n\t 1.Display all accounts\n\t 2.Find account by ID \n\n\t Select a module:");
+    scanf("%d",&choice);
+    //system("clear");
+    
     const char *accountsFilePath ="/Users/geisztadel/account2.csv";
     struct AccountLinkedListNode *head = readAccountsFile(accountsFilePath);
-    printAccountLinkedList(head);
-    freeAccountLinkedList(head);
+    //printAccountLinkedList(head);
+    //freeAccountLinkedList(head);
+    
+    switch(choice)
+        {
+            case 1:
+                readAccountsFile(accountsFilePath);
+                printAccountLinkedList(head);
+                freeAccountLinkedList(head);
+                break;
+            case 2:
+                findClientbyAccNr(head);
+                break;
+        }
     return 0;
 }
+
 
 struct AccountLinkedListNode *readAccountsFile(const char *accountsFilePath) {
 
@@ -129,7 +149,7 @@ void printAccountLinkedList(const struct AccountLinkedListNode *head) {
     const struct AccountLinkedListNode *temp = head;
     while (temp != NULL) {
         if (temp != head) {
-            printf("\n--------------------------------------------------------------------------------\n\n");
+            printf("\n----------------------------\n\n");
         }
 
         printf("%-16s %s\n", "Full name:", temp->account->name);
@@ -143,3 +163,9 @@ void printAccountLinkedList(const struct AccountLinkedListNode *head) {
         temp = temp->next;
     }
 }
+
+void findClientbyAccNr(struct AccountLinkedListNode *head) {
+    printf("%s", "TODO");
+}
+
+
