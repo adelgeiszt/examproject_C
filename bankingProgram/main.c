@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define MAX 30
+
 
 struct Account {
     char *name;
@@ -52,7 +54,9 @@ int main() {
                 freeAccountLinkedList(head);
                 break;
             case 2:
+                readAccountsFile(accountsFilePath);
                 findClientbyAccNr(head);
+                freeAccountLinkedList(head);
                 break;
         }
     return 0;
@@ -165,7 +169,26 @@ void printAccountLinkedList(const struct AccountLinkedListNode *head) {
 }
 
 void findClientbyAccNr(struct AccountLinkedListNode *head) {
-    printf("%s", "TODO");
+    char userinput[MAX];
+   
+    const struct AccountLinkedListNode *current = head; // Initialize current
+    printf("Enter the Account number: ");
+    scanf("%s", userinput);
+    
+    int index;
+    index = 0;
+
+    // Iterate till last element until key is not found
+    while (current != NULL)
+    {
+        if(strcmp(current->account->accNr,userinput)==0) {
+            //printf("%s %d", userinput, index);
+            printf("%-16s %s\n", "Account number:", current->account->accNr);
+
+        }
+        index++;
+        current = current->next;
+    }
 }
 
 
