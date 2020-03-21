@@ -37,7 +37,7 @@ void findClientbyAccNr(struct AccountLinkedListNode *head);
 int main() {
     int choice;
     printf("MAIN MENU");
-    printf("\n\n\t 1.Display all accounts\n\t 2.Find account by ID \n\n\t Select a module:");
+    printf("\n\n\t 1.Display all accounts\n\t 2.Find account by ID \n\n\t Select a module: ");
     scanf("%d",&choice);
     //system("clear");
     
@@ -183,8 +183,14 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
     {
         if(strcmp(current->account->accNr,userinput)==0) {
             //printf("%s %d", userinput, index);
+            printf("\n");
+            printf("%-16s %s\n", "Full name:", current->account->name);
             printf("%-16s %s\n", "Account number:", current->account->accNr);
-
+            printf("%-16s %s\n", "Address:", current->account->address);
+            printf("%-16s %s\n", "Citizenship:", current->account->citizenship);
+            printf("%-16s %s\n", "Phone number:", current->account->phone);
+            printf("%-16s %s\n", "Account type:", current->account->accType);
+            printf("%-16s %lf\n", "Account balance:", current->account->accBalance);
         }
         index++;
         current = current->next;
