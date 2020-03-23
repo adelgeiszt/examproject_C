@@ -35,6 +35,7 @@ void findClientbyAccNr(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head);
 void withdraw(struct AccountLinkedListNode *head);
 void saveTransactRecord(void);
+void newClient(void);
 
 
 int main() {
@@ -64,6 +65,14 @@ int main() {
                 readAccountsFile(accountsFilePath);
                 deposit(head);
                 freeAccountLinkedList(head);
+                break;
+            case 4:
+                readAccountsFile(accountsFilePath);
+                withdraw(head);
+                freeAccountLinkedList(head);
+                break;
+            case 5:
+                printf("Transaction history");
                 break;
         }
     return 0;
@@ -223,7 +232,7 @@ void deposit(struct AccountLinkedListNode *head) {
                printf("Enter the amount of the deposit: ");
                scanf("%lf", &userdeposit);
                current->account->accBalance = current->account->accBalance + userdeposit;
-               printf("\nDeposit successful. ");
+               printf("\nDeposit successful.\n");
                printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
            }
            index++;
@@ -233,9 +242,38 @@ void deposit(struct AccountLinkedListNode *head) {
 }
 
 void withdraw(struct AccountLinkedListNode *head) {
+        char useraccnr[MAX];
+        double userwithdraw;
+          
+        const struct AccountLinkedListNode *current = head; // Initialize current
+        printf("\n\nEnter the Account number: ");
+        scanf("%s", useraccnr);
+           
+        int index;
+        index = 0;
+
+        while (current != NULL)
+        {
+               if(strcmp(current->account->accNr,useraccnr)==0) {
+                   printf("\n");
+                   printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
+                   printf("\n");
+                   printf("Enter the amount of the withdrawal: ");
+                   scanf("%lf", &userwithdraw);
+                   current->account->accBalance = current->account->accBalance - userwithdraw;
+                   printf("\nWithdrawal successful.\n");
+                   printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
+               }
+               index++;
+               current = current->next;
+           }
+        
+    }
+void saveTransactRecord(void) {
     //TODO
 }
-void saveTransactRecord(void) {
+
+void newClient(void) {
     //TODO
 }
 
