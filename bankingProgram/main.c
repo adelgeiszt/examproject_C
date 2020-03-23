@@ -32,8 +32,9 @@ struct AccountLinkedListNode *readAccountsFile(const char*);
 void freeAccountLinkedList(struct AccountLinkedListNode *head);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
-void transactIn(struct AccountLinkedListNode *head);
-void transactOut(struct AccountLinkedListNode *head);
+void deposit(struct AccountLinkedListNode *head);
+void withdraw(struct AccountLinkedListNode *head);
+void saveTransactRecord(void);
 
 
 int main() {
@@ -61,8 +62,7 @@ int main() {
                 break;
             case 3:
                 readAccountsFile(accountsFilePath);
-                //findClientbyAccNr(head);
-                transactIn(head);
+                deposit(head);
                 freeAccountLinkedList(head);
                 break;
         }
@@ -179,7 +179,7 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
     char userinput[MAX];
    
     const struct AccountLinkedListNode *current = head; // Initialize current
-    printf("Enter the Account number: ");
+    printf("\n\nEnter the Account number: ");
     scanf("%s", userinput);
     
     int index;
@@ -189,7 +189,6 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
     while (current != NULL)
     {
         if(strcmp(current->account->accNr,userinput)==0) {
-            //printf("%s %d", userinput, index);
             printf("\n");
             printf("%-16s %s\n", "Full name:", current->account->name);
             printf("%-16s %s\n", "Account number:", current->account->accNr);
@@ -204,18 +203,17 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
     }
 }
 
-void transactIn(struct AccountLinkedListNode *head) {
+void deposit(struct AccountLinkedListNode *head) {
     char useraccnr[MAX];
     double userdeposit;
       
     const struct AccountLinkedListNode *current = head; // Initialize current
-    printf("Enter the Account number: ");
+    printf("\n\nEnter the Account number: ");
     scanf("%s", useraccnr);
        
     int index;
     index = 0;
 
-    // Iterate till last element until key is not found
     while (current != NULL)
     {
            if(strcmp(current->account->accNr,useraccnr)==0) {
@@ -234,7 +232,12 @@ void transactIn(struct AccountLinkedListNode *head) {
     
 }
 
-void transactOut(struct AccountLinkedListNode *head) {
+void withdraw(struct AccountLinkedListNode *head) {
     //TODO
 }
+void saveTransactRecord(void) {
+    //TODO
+}
+
+
 
