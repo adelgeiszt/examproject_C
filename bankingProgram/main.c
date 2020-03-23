@@ -39,7 +39,7 @@ void transactOut(struct AccountLinkedListNode *head);
 int main() {
     int choice;
     printf("MAIN MENU");
-    printf("\n\n\t 1.Display all accounts\n\t 2.Find account by ID \n\t 3. Deposit money\n\t 4. Withdraw money\n\t 5. Transaction history \n\n\t Select a module: ");
+    printf("\n\n\t 1. Display all accounts\n\t 2. Find account by ID \n\t 3. Deposit money\n\t 4. Withdraw money\n\t 5. Transaction history \n\n\t Select a module: ");
     scanf("%d",&choice);
     //system("clear");
     
@@ -61,7 +61,7 @@ int main() {
                 break;
             case 3:
                 readAccountsFile(accountsFilePath);
-                findClientbyAccNr(head);
+                //findClientbyAccNr(head);
                 transactIn(head);
                 freeAccountLinkedList(head);
                 break;
@@ -205,7 +205,33 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
 }
 
 void transactIn(struct AccountLinkedListNode *head) {
-    //TODO
+    char useraccnr[MAX];
+    double userdeposit;
+      
+    const struct AccountLinkedListNode *current = head; // Initialize current
+    printf("Enter the Account number: ");
+    scanf("%s", useraccnr);
+       
+    int index;
+    index = 0;
+
+    // Iterate till last element until key is not found
+    while (current != NULL)
+    {
+           if(strcmp(current->account->accNr,useraccnr)==0) {
+               printf("\n");
+               printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
+               printf("\n");
+               printf("Enter the amount of the deposit: ");
+               scanf("%lf", &userdeposit);
+               current->account->accBalance = current->account->accBalance + userdeposit;
+               printf("\nDeposit successful. ");
+               printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
+           }
+           index++;
+           current = current->next;
+       }
+    
 }
 
 void transactOut(struct AccountLinkedListNode *head) {
