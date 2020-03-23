@@ -29,22 +29,23 @@ struct AccountLinkedListNode {
 };
 
 struct AccountLinkedListNode *readAccountsFile(const char*);
-void menu(void);
 void freeAccountLinkedList(struct AccountLinkedListNode *head);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
+void transactIn(struct AccountLinkedListNode *head);
+void transactOut(struct AccountLinkedListNode *head);
+
 
 int main() {
     int choice;
     printf("MAIN MENU");
-    printf("\n\n\t 1.Display all accounts\n\t 2.Find account by ID \n\n\t Select a module: ");
+    printf("\n\n\t 1.Display all accounts\n\t 2.Find account by ID \n\t 3. Deposit money\n\t 4. Withdraw money\n\t 5. Transaction history \n\n\t Select a module: ");
     scanf("%d",&choice);
     //system("clear");
     
     const char *accountsFilePath ="/Users/geisztadel/account2.csv";
     struct AccountLinkedListNode *head = readAccountsFile(accountsFilePath);
-    //printAccountLinkedList(head);
-    //freeAccountLinkedList(head);
+
     
     switch(choice)
         {
@@ -56,6 +57,12 @@ int main() {
             case 2:
                 readAccountsFile(accountsFilePath);
                 findClientbyAccNr(head);
+                freeAccountLinkedList(head);
+                break;
+            case 3:
+                readAccountsFile(accountsFilePath);
+                findClientbyAccNr(head);
+                transactIn(head);
                 freeAccountLinkedList(head);
                 break;
         }
@@ -197,4 +204,11 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
     }
 }
 
+void transactIn(struct AccountLinkedListNode *head) {
+    //TODO
+}
+
+void transactOut(struct AccountLinkedListNode *head) {
+    //TODO
+}
 
