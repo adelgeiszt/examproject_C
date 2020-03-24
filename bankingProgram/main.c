@@ -287,7 +287,7 @@ void newClient(const char *accountsFilePath) {
     double accBalance;
   
     // Read data
-  
+    fflush(stdin);
     printf("\tFull name: ");
     fgets(name,sizeof(name),stdin);
     
