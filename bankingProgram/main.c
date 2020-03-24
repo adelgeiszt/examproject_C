@@ -35,13 +35,13 @@ void findClientbyAccNr(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head);
 void withdraw(struct AccountLinkedListNode *head);
 void saveTransactRecord(void);
-void newClient(void);
+void newClient(const char*);
 
 
 int main() {
     int choice;
     printf("MAIN MENU");
-    printf("\n\n\t 1. Display all accounts\n\t 2. Find account by ID \n\t 3. Deposit money\n\t 4. Withdraw money\n\t 5. Transaction history \n\n\t Select a module: ");
+    printf("\n\n\t 1. Display all accounts\n\t 2. Find account by ID \n\t 3. Deposit money\n\t 4. Withdraw money\n\t 5. Transaction history \n\t 6. Add client \n\n\t Select a module: ");
     scanf("%d",&choice);
     //system("clear");
     
@@ -73,6 +73,9 @@ int main() {
                 break;
             case 5:
                 printf("Transaction history");
+                break;
+            case 6:
+                newClient(accountsFilePath);
                 break;
         }
     return 0;
@@ -107,27 +110,27 @@ struct AccountLinkedListNode *readAccountsFile(const char *accountsFilePath) {
         struct AccountLinkedListNode *nextNode = malloc(sizeof(struct AccountLinkedListNode));
         nextNode->account = malloc(sizeof(struct Account));
 
-        unsigned long nameLength = strlen(name);
+        unsigned long nameLength = strlen(name) + 1;
         nextNode->account->name = malloc(sizeof(char) * nameLength);
         strncpy(nextNode->account->name, name, nameLength);
 
-        unsigned long accNrLength = strlen(accNr);
+        unsigned long accNrLength = strlen(accNr) + 1;
         nextNode->account->accNr = malloc(sizeof(char) * accNrLength);
         strncpy(nextNode->account->accNr, accNr, accNrLength);
 
-        unsigned long addressLength = strlen(address);
+        unsigned long addressLength = strlen(address) + 1;
         nextNode->account->address = malloc(sizeof(char) * addressLength);
         strncpy(nextNode->account->address, address, addressLength);
 
-        unsigned long citizenshipLength = strlen(citizenship);
+        unsigned long citizenshipLength = strlen(citizenship) + 1;
         nextNode->account->citizenship = malloc(sizeof(char) * citizenshipLength);
         strncpy(nextNode->account->citizenship, citizenship, citizenshipLength);
 
-        unsigned long phoneLength = strlen(phone);
+        unsigned long phoneLength = strlen(phone) + 1;
         nextNode->account->phone = malloc(sizeof(char) * phoneLength);
         strncpy(nextNode->account->phone, phone, phoneLength);
 
-        unsigned long accTypeLength = strlen(accType);
+        unsigned long accTypeLength = strlen(accType) + 1;
         nextNode->account->accType = malloc(sizeof(char) * accTypeLength);
         strncpy(nextNode->account->accType, accType, accTypeLength);
 
@@ -273,8 +276,44 @@ void saveTransactRecord(void) {
     //TODO
 }
 
-void newClient(void) {
-    //TODO
+void newClient(const char *accountsFilePath) {
+    FILE *filePtr = fopen(accountsFilePath, "a");
+       if (filePtr == NULL) {
+           printf("Cannot open file \n");
+           exit(0);
+       }
+    
+    char name[64], accNr[64], address[64], citizenship[64], phone[64], accType[64];
+    double accBalance;
+  
+    // Read data
+  
+    printf("\tFull name: ");
+    fgets(name,sizeof(name),stdin);
+    
+    printf("\tAccount number: ");
+    fgets(accNr,sizeof(accNr),stdin);
+    
+    printf("\tAddress: ");
+    fgets(address,sizeof(address),stdin);
+    
+    printf("\tCitizenship: ");
+    fgets(citizenship,sizeof(citizenship),stdin);
+    
+    printf("\tPhone: ");
+    fgets(phone,sizeof(phone),stdin);
+    
+    printf("\tAccount type: ");
+    fgets(accType,sizeof(accType),stdin);
+    
+    printf("\tAccount balance: ");
+    scanf("%lf", &accBalance);
+    
+    // Save data
+    fprintf(filePtr, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%lf\"", name, accNr, address, citizenship, phone, accType, accBalance);
+    
+    // Close the file
+    fclose(filePtr);
 }
 
 
