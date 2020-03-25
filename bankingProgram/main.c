@@ -35,7 +35,9 @@ void findClientbyAccNr(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head);
 void withdraw(struct AccountLinkedListNode *head);
 void saveTransactRecord(void);
+void input(char *string,int length);
 void newClient(const char*);
+
 
 
 int main() {
@@ -276,6 +278,14 @@ void saveTransactRecord(void) {
     //TODO
 }
 
+void input(char *string,int length)
+{
+    fgets(string,length,stdin);
+    while(*string != '\n')
+        string++;
+    *string = '\0';
+}
+
 void newClient(const char *accountsFilePath) {
     FILE *filePtr = fopen(accountsFilePath, "a");
        if (filePtr == NULL) {
@@ -285,26 +295,35 @@ void newClient(const char *accountsFilePath) {
     
     char name[64], accNr[64], address[64], citizenship[64], phone[64], accType[64];
     double accBalance;
+    //int i;
+    
   
     // Read data
     fflush(stdin);
     printf("\tFull name: ");
-    fgets(name,sizeof(name),stdin);
+    //fgets(name,sizeof(name),stdin);
+    input(name, sizeof(name));
+
     
     printf("\tAccount number: ");
-    fgets(accNr,sizeof(accNr),stdin);
+    //fgets(accNr,sizeof(accNr),stdin);
+    input(accNr, sizeof(accNr));
     
     printf("\tAddress: ");
-    fgets(address,sizeof(address),stdin);
+    //fgets(address,sizeof(address),stdin);
+    input(address, sizeof(address));
     
     printf("\tCitizenship: ");
-    fgets(citizenship,sizeof(citizenship),stdin);
+    //fgets(citizenship,sizeof(citizenship),stdin);
+    input(citizenship, sizeof(citizenship));
     
     printf("\tPhone: ");
-    fgets(phone,sizeof(phone),stdin);
+    //fgets(phone,sizeof(phone),stdin);
+    input(phone, sizeof(phone));
     
     printf("\tAccount type: ");
-    fgets(accType,sizeof(accType),stdin);
+    //fgets(accType,sizeof(accType),stdin);
+    input(accType, sizeof(accType));
     
     printf("\tAccount balance: ");
     scanf("%lf", &accBalance);
@@ -312,7 +331,6 @@ void newClient(const char *accountsFilePath) {
     // Save data
     fprintf(filePtr, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%lf\"", name, accNr, address, citizenship, phone, accType, accBalance);
     
-    // Close the file
     fclose(filePtr);
 }
 
