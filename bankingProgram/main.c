@@ -33,8 +33,8 @@ void freeAccountLinkedList(struct AccountLinkedListNode *head);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head);
-void withdraw(struct AccountLinkedListNode *head);
-void saveTransactRecord(void);
+void withdraw(struct AccountLinkedListNode *head, const char *);
+void saveTransactRecord(const char *, double amount);
 void input(char *string,int length);
 void newClient(const char*);
 
@@ -47,6 +47,7 @@ int main() {
     scanf("%d",&choice);
     //system("clear");
     
+    const char *transactLogFilePath = "/Users/geisztadel/transactlog.csv";
     const char *accountsFilePath ="/Users/geisztadel/account2.csv";
     struct AccountLinkedListNode *head = readAccountsFile(accountsFilePath);
 
@@ -70,11 +71,10 @@ int main() {
                 break;
             case 4:
                 readAccountsFile(accountsFilePath);
-                withdraw(head);
+                withdraw(head, transactLogFilePath);
                 freeAccountLinkedList(head);
                 break;
             case 5:
-                printf("Transaction history");
                 break;
             case 6:
                 newClient(accountsFilePath);
@@ -219,7 +219,7 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
 
 void deposit(struct AccountLinkedListNode *head) {
     char useraccnr[MAX];
-    double userdeposit;
+    double userdeposit = 0;
       
     const struct AccountLinkedListNode *current = head; // Initialize current
     printf("\n\nEnter the Account number: ");
@@ -246,15 +246,16 @@ void deposit(struct AccountLinkedListNode *head) {
     
 }
 
-void withdraw(struct AccountLinkedListNode *head) {
+void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePath) {
         char useraccnr[MAX];
-        double userwithdraw;
+        double userwithdraw = 0;
           
         const struct AccountLinkedListNode *current = head; // Initialize current
         printf("\n\nEnter the Account number: ");
         scanf("%s", useraccnr);
            
         int index;
+        double withdrawalAmount;
         index = 0;
 
         while (current != NULL)
@@ -272,10 +273,23 @@ void withdraw(struct AccountLinkedListNode *head) {
                index++;
                current = current->next;
            }
-        
+        //timestamp for transaction history
+        //save amount to a variable, write it to log file
+        withdrawalAmount = -userwithdraw;
+        saveTransactRecord(transactLogFilePath, withdrawalAmount);
     }
-void saveTransactRecord(void) {
-    //TODO
+void saveTransactRecord(const char *transactLogFilePath, double amount) {
+    FILE *filePtr = fopen(transactLogFilePath, "a");
+        if (filePtr == NULL) {
+            printf("Cannot open file \n");
+            exit(0);
+        }
+         
+     // Save data
+    fprintf(filePtr, "Withdrawal with the amount of \"%lf\"", amount);
+     
+    fclose(filePtr);
+     
 }
 
 void input(char *string,int length)
@@ -300,7 +314,6 @@ void newClient(const char *accountsFilePath) {
     fflush(stdin);
     printf("\tFull name: ");
     input(name, sizeof(name));
-
     
     printf("\tAccount number: ");
     input(accNr, sizeof(accNr));
