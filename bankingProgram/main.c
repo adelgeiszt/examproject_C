@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #define MAX 30
 
 
@@ -37,7 +38,6 @@ void withdraw(struct AccountLinkedListNode *head, const char *);
 void saveTransactRecord(const char *, double amount);
 void input(char *string,int length);
 void newClient(const char*);
-
 
 
 int main() {
@@ -273,8 +273,8 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
                index++;
                current = current->next;
            }
-        //timestamp for transaction history
-        //save amount to a variable, write it to log file
+    
+        //Store amount in a variable, write it to log file
         withdrawalAmount = -userwithdraw;
         saveTransactRecord(transactLogFilePath, withdrawalAmount);
     }
@@ -284,9 +284,14 @@ void saveTransactRecord(const char *transactLogFilePath, double amount) {
             printf("Cannot open file \n");
             exit(0);
         }
+    
+    char timebuffer[50];
+    time_t current = time(NULL);
+    struct tm* locTime = localtime(&current);
+    strftime(timebuffer, sizeof(timebuffer),  "Value date: %a %m/%d/%Y %I:%M:%S %p", locTime);
          
      // Save data
-    fprintf(filePtr, "Withdrawal with the amount of \"%lf\"", amount);
+    fprintf(filePtr, "Transaction with the amount of %lf, %s", amount, timebuffer);
      
     fclose(filePtr);
      
