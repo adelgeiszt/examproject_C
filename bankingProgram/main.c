@@ -268,8 +268,8 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
         {
                if(strcmp(current->account->accNr,useraccnr)==0) {
                    printf("\n");
-                   printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
                    originalAmount = current->account->accBalance;
+                   printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
                    printf("\n");
                    printf("Enter the amount of the withdrawal: ");
                    scanf("%lf", &userwithdraw);
@@ -306,21 +306,14 @@ void saveTransactRecord(const char *transactLogFilePath, double amount) {
 }
 
 void changeBalance(const char *accountsFilePath, double prevAmount, double newAmount) {
-    FILE *filePtr = fopen(accountsFilePath, "r+");
+    FILE *filePtr = fopen(accountsFilePath, "a");
          if (filePtr == NULL) {
              printf("Cannot open file \n");
              exit(0);
          }
-    int ch;
-    while ((ch = fgetc(filePtr)) != EOF)
-    {
-        if (ch == prevAmount)
-        {
-            fseek(filePtr, -1, SEEK_CUR);
-            fputc(newAmount,filePtr);
-            fseek(filePtr, 0, SEEK_CUR);
-        }
-    }
+    
+    //todo
+    
     fclose(filePtr);
 }
 
