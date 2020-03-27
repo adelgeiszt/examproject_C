@@ -33,11 +33,12 @@ struct AccountLinkedListNode *readAccountsFile(const char*);
 void freeAccountLinkedList(struct AccountLinkedListNode *head);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
-void deposit(struct AccountLinkedListNode *head);
-void withdraw(struct AccountLinkedListNode *head, const char *);
+void deposit(struct AccountLinkedListNode *head, const char *, const char *);
+void withdraw(struct AccountLinkedListNode *head, const char *, const char *);
 void saveTransactRecord(const char *, double amount);
 void input(char *string,int length);
 void newClient(const char*);
+void changeBalance(const char*, double prevAmount, double newAmount);
 
 
 int main() {
@@ -66,12 +67,12 @@ int main() {
                 break;
             case 3:
                 readAccountsFile(accountsFilePath);
-                deposit(head);
+                deposit(head, transactLogFilePath, accountsFilePath);
                 freeAccountLinkedList(head);
                 break;
             case 4:
                 readAccountsFile(accountsFilePath);
-                withdraw(head, transactLogFilePath);
+                withdraw(head, transactLogFilePath, accountsFilePath);
                 freeAccountLinkedList(head);
                 break;
             case 5:
@@ -217,7 +218,7 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
     }
 }
 
-void deposit(struct AccountLinkedListNode *head) {
+void deposit(struct AccountLinkedListNode *head, const char *transactLogFilePath, const char *accountsFilePath) {
     char useraccnr[MAX];
     double userdeposit = 0;
       
@@ -227,6 +228,7 @@ void deposit(struct AccountLinkedListNode *head) {
        
     int index;
     index = 0;
+    double depositAmount;
 
     while (current != NULL)
     {
@@ -243,10 +245,13 @@ void deposit(struct AccountLinkedListNode *head) {
            index++;
            current = current->next;
        }
+    //Store amount in a variable, write it to log file
+    depositAmount = userdeposit;
+    saveTransactRecord(transactLogFilePath, depositAmount);
     
 }
 
-void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePath) {
+void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePath, const char  *accountsFilePath) {
         char useraccnr[MAX];
         double userwithdraw = 0;
           
@@ -255,6 +260,7 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
         scanf("%s", useraccnr);
            
         int index;
+        double originalAmount = 0;
         double withdrawalAmount;
         index = 0;
 
@@ -263,6 +269,7 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
                if(strcmp(current->account->accNr,useraccnr)==0) {
                    printf("\n");
                    printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
+                   originalAmount = current->account->accBalance;
                    printf("\n");
                    printf("Enter the amount of the withdrawal: ");
                    scanf("%lf", &userwithdraw);
@@ -274,9 +281,10 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
                current = current->next;
            }
     
-        //Store amount in a variable, write it to log file
         withdrawalAmount = -userwithdraw;
-        saveTransactRecord(transactLogFilePath, withdrawalAmount);
+        changeBalance(accountsFilePath, originalAmount, withdrawalAmount); //Write the new balance amt to the file
+        saveTransactRecord(transactLogFilePath, withdrawalAmount); //Store amount in a variable, write it to log file
+
     }
 void saveTransactRecord(const char *transactLogFilePath, double amount) {
     FILE *filePtr = fopen(transactLogFilePath, "a");
@@ -295,6 +303,25 @@ void saveTransactRecord(const char *transactLogFilePath, double amount) {
      
     fclose(filePtr);
      
+}
+
+void changeBalance(const char *accountsFilePath, double prevAmount, double newAmount) {
+    FILE *filePtr = fopen(accountsFilePath, "r+");
+         if (filePtr == NULL) {
+             printf("Cannot open file \n");
+             exit(0);
+         }
+    int ch;
+    while ((ch = fgetc(filePtr)) != EOF)
+    {
+        if (ch == prevAmount)
+        {
+            fseek(filePtr, -1, SEEK_CUR);
+            fputc(newAmount,filePtr);
+            fseek(filePtr, 0, SEEK_CUR);
+        }
+    }
+    fclose(filePtr);
 }
 
 void input(char *string,int length)
