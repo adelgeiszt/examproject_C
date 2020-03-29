@@ -38,7 +38,7 @@ void withdraw(struct AccountLinkedListNode *head, const char *, const char *);
 void saveTransactRecord(const char *, double amount);
 void input(char *string,int length);
 void newClient(const char*);
-void changeBalance(const char*, double prevAmount, double newAmount);
+void fileWriteUpdatedLinkedList(const char*, struct AccountLinkedListNode *head);
 
 
 int main() {
@@ -282,7 +282,7 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
            }
     
         withdrawalAmount = -userwithdraw;
-        changeBalance(accountsFilePath, originalAmount, withdrawalAmount); //Write the new balance amt to the file
+        fileWriteUpdatedLinkedList(accountsFilePath, head);
         saveTransactRecord(transactLogFilePath, withdrawalAmount); //Store amount in a variable, write it to log file
 
     }
@@ -305,14 +305,20 @@ void saveTransactRecord(const char *transactLogFilePath, double amount) {
      
 }
 
-void changeBalance(const char *accountsFilePath, double prevAmount, double newAmount) {
-    FILE *filePtr = fopen(accountsFilePath, "a");
+void fileWriteUpdatedLinkedList(const char *accountsFilePath, struct AccountLinkedListNode *head) {
+    FILE *filePtr = fopen(accountsFilePath, "w+");
          if (filePtr == NULL) {
              printf("Cannot open file \n");
              exit(0);
          }
     
-    //todo
+    const struct AccountLinkedListNode *current = head; // Initialize current
+    while (current != NULL)
+    {
+        fprintf(filePtr, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%lf\"", current->account->name, current->account->accNr, current->account->address, current->account->citizenship, current->account->phone, current->account->accType, current->account->accBalance);
+        
+        current= current->next;
+    }
     
     fclose(filePtr);
 }
