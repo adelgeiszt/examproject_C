@@ -247,6 +247,7 @@ void deposit(struct AccountLinkedListNode *head, const char *transactLogFilePath
        }
     //Store amount in a variable, write it to log file
     depositAmount = userdeposit;
+    fileWriteUpdatedLinkedList(accountsFilePath, head);
     saveTransactRecord(transactLogFilePath, depositAmount);
     
 }
@@ -306,7 +307,7 @@ void saveTransactRecord(const char *transactLogFilePath, double amount) {
 }
 
 void fileWriteUpdatedLinkedList(const char *accountsFilePath, struct AccountLinkedListNode *head) {
-    FILE *filePtr = fopen(accountsFilePath, "w+");
+    FILE *filePtr = fopen(accountsFilePath, "w");
          if (filePtr == NULL) {
              printf("Cannot open file \n");
              exit(0);
@@ -315,7 +316,14 @@ void fileWriteUpdatedLinkedList(const char *accountsFilePath, struct AccountLink
     const struct AccountLinkedListNode *current = head; // Initialize current
     while (current != NULL)
     {
-        fprintf(filePtr, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%lf\"", current->account->name, current->account->accNr, current->account->address, current->account->citizenship, current->account->phone, current->account->accType, current->account->accBalance);
+        fprintf(filePtr, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%lf\"\n",
+                current->account->name,
+                current->account->accNr,
+                current->account->address,
+                current->account->citizenship,
+                current->account->phone,
+                current->account->accType,
+                current->account->accBalance);
         
         current= current->next;
     }
