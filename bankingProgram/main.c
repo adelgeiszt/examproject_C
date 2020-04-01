@@ -35,7 +35,7 @@ void printAccountLinkedList(const struct AccountLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head, const char *, const char *);
 void withdraw(struct AccountLinkedListNode *head, const char *, const char *);
-void saveTransactRecord(const char *, double amount);
+void saveTransactRecord(const char *, double amount, char*);
 void input(char *string,int length);
 void newClient(const char*);
 void fileWriteUpdatedLinkedList(const char*, struct AccountLinkedListNode *head);
@@ -248,7 +248,7 @@ void deposit(struct AccountLinkedListNode *head, const char *transactLogFilePath
     //Store amount in a variable, write it to log file
     depositAmount = userdeposit;
     fileWriteUpdatedLinkedList(accountsFilePath, head);
-    saveTransactRecord(transactLogFilePath, depositAmount);
+    saveTransactRecord(transactLogFilePath, depositAmount, useraccnr);
     
 }
 
@@ -284,10 +284,10 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
     
         withdrawalAmount = -userwithdraw;
         fileWriteUpdatedLinkedList(accountsFilePath, head);
-        saveTransactRecord(transactLogFilePath, withdrawalAmount); //Store amount in a variable, write it to log file
+        saveTransactRecord(transactLogFilePath, withdrawalAmount, useraccnr);
 
     }
-void saveTransactRecord(const char *transactLogFilePath, double amount) {
+void saveTransactRecord(const char *transactLogFilePath, double amount, char *accNr) {
     FILE *filePtr = fopen(transactLogFilePath, "a");
         if (filePtr == NULL) {
             printf("Cannot open file \n");
@@ -300,7 +300,7 @@ void saveTransactRecord(const char *transactLogFilePath, double amount) {
     strftime(timebuffer, sizeof(timebuffer),  "Value date: %a %m/%d/%Y %I:%M:%S %p", locTime);
          
      // Save data
-    fprintf(filePtr, "Transaction with the amount of %lf, %s", amount, timebuffer);
+    fprintf(filePtr, "Account nr. %s: transaction with the amount of %lf, %s", accNr, amount, timebuffer);
      
     fclose(filePtr);
      
