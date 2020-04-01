@@ -23,19 +23,36 @@ struct Account {
     double accBalance;
 };
 
+struct Transaction {
+    char *name;
+    char *accNr;
+    char *valueDate;
+    double transactAmt;
+
+};
+
 struct AccountLinkedListNode {
     struct Account *account;
     struct AccountLinkedListNode *prev;
     struct AccountLinkedListNode *next;
 };
 
+struct TransactionLinkedListNode {
+    struct Transaction *transact;
+    struct TransactionLinkedListNode *prev;
+    struct TransactionLinkedListNode *next;
+};
+
+
 struct AccountLinkedListNode *readAccountsFile(const char*);
+struct TransactionLinkedListNode *readTransactHistory(const char*);
 void freeAccountLinkedList(struct AccountLinkedListNode *head);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
+void printTransactionLinkedList(const struct TransactionLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head, const char *, const char *);
 void withdraw(struct AccountLinkedListNode *head, const char *, const char *);
-void saveTransactRecord(const char *, double amount, char*);
+void saveTransactRecord(const char *, char *, char *, double amount);
 void input(char *string,int length);
 void newClient(const char*);
 void fileWriteUpdatedLinkedList(const char*, struct AccountLinkedListNode *head);
@@ -51,8 +68,8 @@ int main() {
     const char *transactLogFilePath = "/Users/geisztadel/transactlog.csv";
     const char *accountsFilePath ="/Users/geisztadel/account2.csv";
     struct AccountLinkedListNode *head = readAccountsFile(accountsFilePath);
+    struct TransactionLinkedListNode *head2 = readTransactHistory(transactLogFilePath);
 
-    
     switch(choice)
         {
             case 1:
@@ -76,6 +93,8 @@ int main() {
                 freeAccountLinkedList(head);
                 break;
             case 5:
+                readTransactHistory(transactLogFilePath);
+                printTransactionLinkedList(head2);
                 break;
             case 6:
                 newClient(accountsFilePath);
@@ -190,6 +209,31 @@ void printAccountLinkedList(const struct AccountLinkedListNode *head) {
     }
 }
 
+void printTransactionLinkedList(const struct TransactionLinkedListNode *head2) {
+    const struct TransactionLinkedListNode *current = head2;
+    
+    char userinput[MAX];
+    printf("\n\nEnter the Account number: ");
+    scanf("%s", userinput);
+    
+    int index;
+    index = 0;
+    
+    while (current != NULL) {
+        if (current != head2) {
+            printf("\n");
+        }
+        if(strcmp(current->transact->accNr,userinput)==0) {
+            printf("%-16s %s\n", "Full name:", current->transact->name);
+            printf("%-16s %s\n", "Account number:", current->transact->accNr);
+            printf("%-16s %s\n", "Value date:", current->transact->valueDate);
+            printf("%-16s %lf\n", "Transaction amount:", current->transact->transactAmt);
+        }
+        index++;
+        current = current->next;
+    }
+}
+
 void findClientbyAccNr(struct AccountLinkedListNode *head) {
     char userinput[MAX];
    
@@ -248,7 +292,7 @@ void deposit(struct AccountLinkedListNode *head, const char *transactLogFilePath
     //Store amount in a variable, write it to log file
     depositAmount = userdeposit;
     fileWriteUpdatedLinkedList(accountsFilePath, head);
-    saveTransactRecord(transactLogFilePath, depositAmount, useraccnr);
+    saveTransactRecord(transactLogFilePath, current->account->name, useraccnr, depositAmount);
     
 }
 
@@ -261,7 +305,6 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
         scanf("%s", useraccnr);
            
         int index;
-        double originalAmount = 0;
         double withdrawalAmount;
         index = 0;
 
@@ -269,7 +312,6 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
         {
                if(strcmp(current->account->accNr,useraccnr)==0) {
                    printf("\n");
-                   originalAmount = current->account->accBalance;
                    printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
                    printf("\n");
                    printf("Enter the amount of the withdrawal: ");
@@ -284,10 +326,11 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
     
         withdrawalAmount = -userwithdraw;
         fileWriteUpdatedLinkedList(accountsFilePath, head);
-        saveTransactRecord(transactLogFilePath, withdrawalAmount, useraccnr);
+        saveTransactRecord(transactLogFilePath, current->account->name, useraccnr, withdrawalAmount);
 
     }
-void saveTransactRecord(const char *transactLogFilePath, double amount, char *accNr) {
+
+void saveTransactRecord(const char *transactLogFilePath, char *name, char *accNr, double amount) {
     FILE *filePtr = fopen(transactLogFilePath, "a");
         if (filePtr == NULL) {
             printf("Cannot open file \n");
@@ -297,14 +340,70 @@ void saveTransactRecord(const char *transactLogFilePath, double amount, char *ac
     char timeBuffer[50];
     time_t current = time(NULL);
     struct tm* locTime = localtime(&current);
-    strftime(timeBuffer, sizeof(timeBuffer),  "Value date: %a %m/%d/%Y %I:%M:%S %p", locTime);
+    strftime(timeBuffer, sizeof(timeBuffer),  "%a %m/%d/%Y %I:%M:%S %p", locTime);
          
      // Save data
-    fprintf(filePtr, "Account nr. %s: transaction with the amount of %lf, %s", accNr, amount, timeBuffer);
+    fprintf(filePtr, "Name: %s Account nr. %s: transaction with the amount of %lf, %s", name, accNr, amount, timeBuffer);
      
     fclose(filePtr);
      
 }
+
+struct TransactionLinkedListNode *readTransactHistory(const char *transactLogFilePath) {
+    
+    FILE *filePtr = fopen(transactLogFilePath, "r");
+        if (filePtr == NULL) {
+            printf("Cannot open file \n");
+            exit(0);
+        }
+    
+    struct TransactionLinkedListNode *firstNode = NULL;
+    struct TransactionLinkedListNode *lastNode = NULL;
+    
+    char name[64], accNr[64], valueDate[64];
+    double transactAmt;
+
+       while (fscanf(
+               filePtr,
+               "\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%lf\"\n",
+               name,
+               accNr,
+               valueDate,
+               &transactAmt)!= EOF) {
+           
+             struct TransactionLinkedListNode *nextNode = malloc(sizeof(struct TransactionLinkedListNode));
+               nextNode->transact = malloc(sizeof(struct Transaction));
+
+               unsigned long nameLength = strlen(name) + 1;
+               nextNode->transact->name = malloc(sizeof(char) * nameLength);
+               strncpy(nextNode->transact->name, name, nameLength);
+
+               unsigned long accNrLength = strlen(accNr) + 1;
+               nextNode->transact->accNr = malloc(sizeof(char) * accNrLength);
+               strncpy(nextNode->transact->accNr, accNr, accNrLength);
+
+               unsigned long valueDateLength = strlen(valueDate) + 1;
+               nextNode->transact->valueDate = malloc(sizeof(char) * valueDateLength);
+               strncpy(nextNode->transact->valueDate, valueDate, valueDateLength);
+           
+               nextNode->transact->transactAmt = transactAmt;
+
+               nextNode->next = NULL;
+               if (lastNode != NULL) {
+                   lastNode->next = nextNode;
+                   nextNode->prev = lastNode;
+               } else {
+                   nextNode->prev = NULL;
+                   firstNode = nextNode;
+               }
+               lastNode = nextNode;
+           }
+    
+           fclose(filePtr);
+    
+           return firstNode;
+}
+
 
 void fileWriteUpdatedLinkedList(const char *accountsFilePath, struct AccountLinkedListNode *head) {
     FILE *filePtr = fopen(accountsFilePath, "w");
