@@ -294,13 +294,13 @@ void saveTransactRecord(const char *transactLogFilePath, double amount, char *ac
             exit(0);
         }
     
-    char timebuffer[50];
+    char timeBuffer[50];
     time_t current = time(NULL);
     struct tm* locTime = localtime(&current);
-    strftime(timebuffer, sizeof(timebuffer),  "Value date: %a %m/%d/%Y %I:%M:%S %p", locTime);
+    strftime(timeBuffer, sizeof(timeBuffer),  "Value date: %a %m/%d/%Y %I:%M:%S %p", locTime);
          
      // Save data
-    fprintf(filePtr, "Account nr. %s: transaction with the amount of %lf, %s", accNr, amount, timebuffer);
+    fprintf(filePtr, "Account nr. %s: transaction with the amount of %lf, %s", accNr, amount, timeBuffer);
      
     fclose(filePtr);
      
