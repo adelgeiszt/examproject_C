@@ -53,7 +53,7 @@ void printTransactionLinkedList(const struct TransactionLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head, const char *, const char *);
 void withdraw(struct AccountLinkedListNode *head, const char *, const char *);
-void saveTransactRecord(const char *, char *, char *, double amount);
+void saveTransactRecord(const char *, char *, double amount);
 void input(char *string,int length);
 void newClient(const char*);
 void fileWriteUpdatedLinkedList(const char*, struct AccountLinkedListNode *head);
@@ -239,7 +239,7 @@ void printTransactionLinkedList(const struct TransactionLinkedListNode *head2) {
 void freeTransactionLinkedList(struct TransactionLinkedListNode *head2) {
     free(head2->transact->name);
     free(head2->transact->accNr);
-    free(head2->transact->valueDate); 
+    free(head2->transact->valueDate);
     free(head2->transact);
 
     if (head2->next != NULL) {
@@ -307,7 +307,7 @@ void deposit(struct AccountLinkedListNode *head, const char *transactLogFilePath
     //Store amount in a variable, write it to log file
     depositAmount = userdeposit;
     fileWriteUpdatedLinkedList(accountsFilePath, head);
-    saveTransactRecord(transactLogFilePath, current->account->name, useraccnr, depositAmount);
+    saveTransactRecord(transactLogFilePath, useraccnr, depositAmount);
     
 }
 
@@ -341,11 +341,11 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
     
         withdrawalAmount = -userwithdraw;
         fileWriteUpdatedLinkedList(accountsFilePath, head);
-        saveTransactRecord(transactLogFilePath, current->account->name, useraccnr, withdrawalAmount);
+        saveTransactRecord(transactLogFilePath, useraccnr, withdrawalAmount);
 
     }
 
-void saveTransactRecord(const char *transactLogFilePath, char *name, char *accNr, double amount) {
+void saveTransactRecord(const char *transactLogFilePath, char *accNr, double amount) {
     FILE *filePtr = fopen(transactLogFilePath, "a");
         if (filePtr == NULL) {
             printf("Cannot open file \n");
@@ -358,7 +358,7 @@ void saveTransactRecord(const char *transactLogFilePath, char *name, char *accNr
     strftime(timeBuffer, sizeof(timeBuffer),  "%a %m/%d/%Y %I:%M:%S %p", locTime);
          
      // Save data
-    fprintf(filePtr, "Name: %s Account nr. %s: transaction with the amount of %lf, %s", name, accNr, amount, timeBuffer);
+    fprintf(filePtr, "\"%s\",\"%s\",\"%lf\"\n", accNr, timeBuffer, amount);
      
     fclose(filePtr);
      
