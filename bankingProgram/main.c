@@ -24,7 +24,6 @@ struct Account {
 };
 
 struct Transaction {
-    char *name;
     char *accNr;
     char *valueDate;
     double transactAmt;
@@ -226,7 +225,6 @@ void printTransactionLinkedList(const struct TransactionLinkedListNode *head2) {
             printf("\n");
         }
         if(strcmp(current->transact->accNr,userinput)==0) {
-            printf("%-16s %s\n", "Full name:", current->transact->name);
             printf("%-16s %s\n", "Account number:", current->transact->accNr);
             printf("%-16s %s\n", "Value date:", current->transact->valueDate);
             printf("%-16s %lf\n", "Transaction amount:", current->transact->transactAmt);
@@ -237,7 +235,6 @@ void printTransactionLinkedList(const struct TransactionLinkedListNode *head2) {
 }
 
 void freeTransactionLinkedList(struct TransactionLinkedListNode *head2) {
-    free(head2->transact->name);
     free(head2->transact->accNr);
     free(head2->transact->valueDate);
     free(head2->transact);
@@ -375,23 +372,18 @@ struct TransactionLinkedListNode *readTransactHistory(const char *transactLogFil
     struct TransactionLinkedListNode *firstNode = NULL;
     struct TransactionLinkedListNode *lastNode = NULL;
     
-    char name[64], accNr[64], valueDate[64];
+    char accNr[64], valueDate[64];
     double transactAmt;
 
        while (fscanf(
                filePtr,
-               "\"%[^\"]\",\"%[^\"]\",\"%[^\"]\",\"%lf\"\n",
-               name,
+               "\"%[^\"]\",\"%[^\"]\",\"%lf\"\n",
                accNr,
                valueDate,
                &transactAmt)!= EOF) {
            
              struct TransactionLinkedListNode *nextNode = malloc(sizeof(struct TransactionLinkedListNode));
                nextNode->transact = malloc(sizeof(struct Transaction));
-
-               unsigned long nameLength = strlen(name) + 1;
-               nextNode->transact->name = malloc(sizeof(char) * nameLength);
-               strncpy(nextNode->transact->name, name, nameLength);
 
                unsigned long accNrLength = strlen(accNr) + 1;
                nextNode->transact->accNr = malloc(sizeof(char) * accNrLength);
