@@ -47,6 +47,7 @@ struct TransactionLinkedListNode {
 struct AccountLinkedListNode *readAccountsFile(const char*);
 struct TransactionLinkedListNode *readTransactHistory(const char*);
 void freeAccountLinkedList(struct AccountLinkedListNode *head);
+void freeTransactionLinkedList(struct TransactionLinkedListNode *head2);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
 void printTransactionLinkedList(const struct TransactionLinkedListNode *head);
 void findClientbyAccNr(struct AccountLinkedListNode *head);
@@ -95,6 +96,7 @@ int main() {
             case 5:
                 readTransactHistory(transactLogFilePath);
                 printTransactionLinkedList(head2);
+                freeTransactionLinkedList(head2);
                 break;
             case 6:
                 newClient(accountsFilePath);
@@ -232,6 +234,19 @@ void printTransactionLinkedList(const struct TransactionLinkedListNode *head2) {
         index++;
         current = current->next;
     }
+}
+
+void freeTransactionLinkedList(struct TransactionLinkedListNode *head2) {
+    free(head2->transact->name);
+    free(head2->transact->accNr);
+    free(head2->transact->valueDate); 
+    free(head2->transact);
+
+    if (head2->next != NULL) {
+        freeTransactionLinkedList(head2->next);
+    }
+
+    free(head2);
 }
 
 void findClientbyAccNr(struct AccountLinkedListNode *head) {
