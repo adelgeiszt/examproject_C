@@ -49,7 +49,8 @@ void freeAccountLinkedList(struct AccountLinkedListNode *head);
 void freeTransactionLinkedList(struct TransactionLinkedListNode *head2);
 void printAccountLinkedList(const struct AccountLinkedListNode *head);
 void printTransactionLinkedList(const struct TransactionLinkedListNode *head);
-void findClientbyAccNr(struct AccountLinkedListNode *head);
+void findAccByID(struct AccountLinkedListNode *head);
+void findAccByName(struct AccountLinkedListNode *head);
 void deposit(struct AccountLinkedListNode *head, const char *, const char *);
 void withdraw(struct AccountLinkedListNode *head, const char *, const char *);
 void saveTransactRecord(const char *, char *, double amount);
@@ -61,9 +62,9 @@ void fileWriteUpdatedLinkedList(const char*, struct AccountLinkedListNode *head)
 int main() {
     int choice;
     printf("MAIN MENU");
-    printf("\n\n\t 1. Display all accounts\n\t 2. Find account by ID \n\t 3. Deposit money\n\t 4. Withdraw money\n\t 5. Transaction history \n\t 6. Add client \n\n\t Select a module: ");
+    printf("\n\n\t 1. Display all accounts\n\t 2. Find account by ID\n\t 3. Find account(s) by name\n\t 4. Cash deposit\n\t 6. Cash withdrawal\n\t 7. Transaction history\n\t 8. Add new client\n\n\t Select a module: ");
     scanf("%d",&choice);
-    //system("clear");
+    printf("\n");
     
     const char *transactLogFilePath = "/Users/geisztadel/transactlog.csv";
     const char *accountsFilePath ="/Users/geisztadel/account2.csv";
@@ -79,25 +80,30 @@ int main() {
                 break;
             case 2:
                 readAccountsFile(accountsFilePath);
-                findClientbyAccNr(head);
+                findAccByID(head);
                 freeAccountLinkedList(head);
                 break;
             case 3:
                 readAccountsFile(accountsFilePath);
-                deposit(head, transactLogFilePath, accountsFilePath);
+                findAccByName(head);
                 freeAccountLinkedList(head);
                 break;
             case 4:
                 readAccountsFile(accountsFilePath);
-                withdraw(head, transactLogFilePath, accountsFilePath);
+                deposit(head, transactLogFilePath, accountsFilePath);
                 freeAccountLinkedList(head);
                 break;
             case 5:
+                readAccountsFile(accountsFilePath);
+                withdraw(head, transactLogFilePath, accountsFilePath);
+                freeAccountLinkedList(head);
+                break;
+            case 6:
                 readTransactHistory(transactLogFilePath);
                 printTransactionLinkedList(head2);
                 freeTransactionLinkedList(head2);
                 break;
-            case 6:
+            case 7:
                 newClient(accountsFilePath);
                 break;
         }
@@ -246,12 +252,12 @@ void freeTransactionLinkedList(struct TransactionLinkedListNode *head2) {
     free(head2);
 }
 
-void findClientbyAccNr(struct AccountLinkedListNode *head) {
-    char userinput[MAX];
+void findAccByID(struct AccountLinkedListNode *head) {
+    char userinputAccNr[MAX];
    
     const struct AccountLinkedListNode *current = head; // Initialize current
-    printf("\n\nEnter the Account number: ");
-    scanf("%s", userinput);
+    printf("Enter the Account number: ");
+    scanf("%s", userinputAccNr);
     
     int index;
     index = 0;
@@ -259,7 +265,36 @@ void findClientbyAccNr(struct AccountLinkedListNode *head) {
     // Iterate till last element until key is not found
     while (current != NULL)
     {
-        if(strcmp(current->account->accNr,userinput)==0) {
+        if(strcmp(current->account->accNr,userinputAccNr)==0) {
+            printf("\n");
+            printf("%-16s %s\n", "Full name:", current->account->name);
+            printf("%-16s %s\n", "Account number:", current->account->accNr);
+            printf("%-16s %s\n", "Address:", current->account->address);
+            printf("%-16s %s\n", "Citizenship:", current->account->citizenship);
+            printf("%-16s %s\n", "Phone number:", current->account->phone);
+            printf("%-16s %s\n", "Account type:", current->account->accType);
+            printf("%-16s %lf\n", "Account balance:", current->account->accBalance);
+        }
+        index++;
+        current = current->next;
+    }
+}
+void findAccByName(struct AccountLinkedListNode *head) {
+    char userinputName[64];
+   
+    const struct AccountLinkedListNode *current = head;
+    
+    fflush(stdin);
+    printf("Enter the full name: ");
+    fgets(userinputName,sizeof(userinputName),stdin);
+    //newline char debug
+    
+    int index;
+    index = 0;
+
+    while (current != NULL)
+    {
+        if(strcmp(current->account->name,userinputName)==0) {
             printf("\n");
             printf("%-16s %s\n", "Full name:", current->account->name);
             printf("%-16s %s\n", "Account number:", current->account->accNr);
@@ -481,6 +516,7 @@ void newClient(const char *accountsFilePath) {
     // Save data
     fprintf(filePtr, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%lf\"", name, accNr, address, citizenship, phone, accType, accBalance);
     
+    printf("\n\tAccount added.");
     fclose(filePtr);
 }
 
