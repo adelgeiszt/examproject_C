@@ -280,15 +280,14 @@ void findAccByID(struct AccountLinkedListNode *head) {
     }
 }
 void findAccByName(struct AccountLinkedListNode *head) {
-    char userinputName[64];
+    char userinputName[MAX];
    
     const struct AccountLinkedListNode *current = head;
     
     fflush(stdin);
     printf("Enter the full name: ");
-    fgets(userinputName,sizeof(userinputName),stdin);
-    //newline char debug
-    
+    input(userinputName, sizeof(userinputName));
+        
     int index;
     index = 0;
 
