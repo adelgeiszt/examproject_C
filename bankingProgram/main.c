@@ -62,7 +62,7 @@ void fileWriteUpdatedLinkedList(const char*, struct AccountLinkedListNode *head)
 int main() {
     int choice;
     printf("MAIN MENU");
-    printf("\n\n\t 1. Display all accounts\n\t 2. Find account by ID\n\t 3. Find account(s) by name\n\t 4. Cash deposit\n\t 6. Cash withdrawal\n\t 7. Transaction history\n\t 8. Add new client\n\n\t Select a module: ");
+    printf("\n\n\t 1. Display all accounts\n\t 2. Find account by ID\n\t 3. Find account(s) by name\n\t 4. Cash deposit\n\t 5. Cash withdrawal\n\t 6. Transaction history\n\t 7. Add new client\n\n\t Select a module: ");
     scanf("%d",&choice);
     printf("\n");
     
@@ -262,7 +262,6 @@ void findAccByID(struct AccountLinkedListNode *head) {
     int index;
     index = 0;
 
-    // Iterate till last element until key is not found
     while (current != NULL)
     {
         if(strcmp(current->account->accNr,userinputAccNr)==0) {
@@ -347,7 +346,7 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
         double userwithdraw = 0;
           
         const struct AccountLinkedListNode *current = head; // Initialize current
-        printf("\n\nEnter the Account number: ");
+        printf("\nEnter the Account number: ");
         scanf("%s", useraccnr);
            
         int index;
@@ -362,18 +361,23 @@ void withdraw(struct AccountLinkedListNode *head, const char *transactLogFilePat
                    printf("\n");
                    printf("Enter the amount of the withdrawal: ");
                    scanf("%lf", &userwithdraw);
-                   current->account->accBalance = current->account->accBalance - userwithdraw;
-                   printf("\nWithdrawal successful.\n");
-                   printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
+                   if(current->account->accBalance >= userwithdraw) {
+                       current->account->accBalance = current->account->accBalance - userwithdraw;
+                       withdrawalAmount = -userwithdraw;
+                       printf("\nWithdrawal successful.\n");
+                       printf("%-16s %lf\n", "Available balance:", current->account->accBalance);
+                       fileWriteUpdatedLinkedList(accountsFilePath, head);
+                       saveTransactRecord(transactLogFilePath, useraccnr, withdrawalAmount);
+                   } else {
+                       printf("\nInvalid amount: not enough balance for withdrawal!\n");
+                   }
                }
                index++;
                current = current->next;
            }
-    
-        withdrawalAmount = -userwithdraw;
-        fileWriteUpdatedLinkedList(accountsFilePath, head);
-        saveTransactRecord(transactLogFilePath, useraccnr, withdrawalAmount);
-
+        //withdrawalAmount = -userwithdraw;
+        //fileWriteUpdatedLinkedList(accountsFilePath, head);
+        //saveTransactRecord(transactLogFilePath, useraccnr, withdrawalAmount);
     }
 
 void saveTransactRecord(const char *transactLogFilePath, char *accNr, double amount) {
