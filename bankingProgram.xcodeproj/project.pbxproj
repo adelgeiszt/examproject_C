@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6514CE5E246E7797009DCB6C /* account.c in Sources */ = {isa = PBXBuildFile; fileRef = 6514CE5D246E7797009DCB6C /* account.c */; };
 		65C68881241B7BCE00A61824 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 65C68880241B7BCE00A61824 /* main.c */; };
+		65FDA043246EACE400F5A9CC /* transaction.c in Sources */ = {isa = PBXBuildFile; fileRef = 65FDA042246EACE400F5A9CC /* transaction.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +25,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6514CE5D246E7797009DCB6C /* account.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = account.c; sourceTree = "<group>"; };
+		6514CE5F246E9EE3009DCB6C /* account.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = account.h; sourceTree = "<group>"; };
 		65C6887D241B7BCE00A61824 /* bankingProgram */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bankingProgram; sourceTree = BUILT_PRODUCTS_DIR; };
 		65C68880241B7BCE00A61824 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		65FDA041246EAB7500F5A9CC /* transaction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = transaction.h; sourceTree = "<group>"; };
+		65FDA042246EACE400F5A9CC /* transaction.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = transaction.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,10 @@
 			isa = PBXGroup;
 			children = (
 				65C68880241B7BCE00A61824 /* main.c */,
+				6514CE5D246E7797009DCB6C /* account.c */,
+				6514CE5F246E9EE3009DCB6C /* account.h */,
+				65FDA041246EAB7500F5A9CC /* transaction.h */,
+				65FDA042246EACE400F5A9CC /* transaction.c */,
 			);
 			path = bankingProgram;
 			sourceTree = "<group>";
@@ -120,6 +130,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				65C68881241B7BCE00A61824 /* main.c in Sources */,
+				65FDA043246EACE400F5A9CC /* transaction.c in Sources */,
+				6514CE5E246E7797009DCB6C /* account.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,7 +176,7 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -221,7 +233,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
