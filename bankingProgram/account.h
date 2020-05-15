@@ -8,7 +8,6 @@
 
 #ifndef account_h
 #define account_h
-#define MAX 30
 
 struct Account {
     char *name;
