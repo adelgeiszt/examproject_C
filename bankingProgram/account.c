@@ -10,6 +10,7 @@
 #include <time.h>
 #include "account.h"
 #include "transaction.h"
+#define MAX 64
 
 struct AccountLinkedListNode *readAccountsFile(const char *accountsFilePath) {
 
@@ -22,7 +23,7 @@ struct AccountLinkedListNode *readAccountsFile(const char *accountsFilePath) {
     struct AccountLinkedListNode *firstNode = NULL;
     struct AccountLinkedListNode *lastNode = NULL;
 
-    char name[64], accNr[64], address[64], citizenship[64], phone[64], accType[64];
+    char name[MAX], accNr[MAX], address[MAX], citizenship[MAX], phone[MAX], accType[MAX];
     double accBalance;
 
     while (fscanf(
@@ -135,10 +136,12 @@ void findAccByID(struct AccountLinkedListNode *head) {
             printf("%-16s %s\n", "Phone number:", current->account->phone);
             printf("%-16s %s\n", "Account type:", current->account->accType);
             printf("%-16s %lf\n", "Account balance:", current->account->accBalance);
+            return;
         }
         index++;
         current = current->next;
     }
+    printf("Account not found!\n");
 }
 void findAccByName(struct AccountLinkedListNode *head) {
     char userinputName[MAX];
@@ -163,10 +166,12 @@ void findAccByName(struct AccountLinkedListNode *head) {
             printf("%-16s %s\n", "Phone number:", current->account->phone);
             printf("%-16s %s\n", "Account type:", current->account->accType);
             printf("%-16s %lf\n", "Account balance:", current->account->accBalance);
+            return;
         }
         index++;
         current = current->next;
     }
+    printf("Account not found!\n");
 }
 void newClient(const char *accountsFilePath) {
     FILE *filePtr = fopen(accountsFilePath, "a");
@@ -175,7 +180,7 @@ void newClient(const char *accountsFilePath) {
            exit(0);
        }
     
-    char name[64], accNr[64], address[64], citizenship[64], phone[64], accType[64];
+    char name[MAX], accNr[MAX], address[MAX], citizenship[MAX], phone[MAX], accType[MAX];
     double accBalance;
   
     // Read data

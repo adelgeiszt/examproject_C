@@ -11,11 +11,12 @@
 #include <time.h>
 #include "account.h"
 #include "transaction.h"
+#define MAX 64
 
 void printTransactionLinkedList(const struct TransactionLinkedListNode *head2) {
     const struct TransactionLinkedListNode *current = head2;
     
-    char userinput[30];
+    char userinput[MAX];
     printf("\n\nEnter the Account number: ");
     scanf("%s", userinput);
     
@@ -75,7 +76,7 @@ void deposit(struct AccountLinkedListNode *head, const char *transactLogFilePath
            index++;
            current = current->next;
        }
-    //Store amount in a variable, write it to log file
+    //Amount valtozoba, majd fajlba irom
     depositAmount = userdeposit;
     fileWriteUpdatedLinkedList(accountsFilePath, head);
     saveTransactRecord(transactLogFilePath, useraccnr, depositAmount);
@@ -125,7 +126,7 @@ void saveTransactRecord(const char *transactLogFilePath, char *accNr, double amo
             exit(0);
         }
     
-    char timeBuffer[50];
+    char timeBuffer[MAX];
     time_t current = time(NULL);
     struct tm* locTime = localtime(&current);
     strftime(timeBuffer, sizeof(timeBuffer),  "%a %m/%d/%Y %I:%M:%S %p", locTime);
@@ -148,7 +149,7 @@ struct TransactionLinkedListNode *readTransactHistory(const char *transactLogFil
     struct TransactionLinkedListNode *firstNode = NULL;
     struct TransactionLinkedListNode *lastNode = NULL;
     
-    char accNr[64], valueDate[64];
+    char accNr[MAX], valueDate[MAX];
     double transactAmt;
 
        while (fscanf(
